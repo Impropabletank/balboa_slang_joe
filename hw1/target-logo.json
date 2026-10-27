@@ -1,0 +1,10 @@
+{
+  "resolution": [640, 480],
+  "background": [0.95, 0.95, 0.95],
+  "objects": [
+    { "type": "circle", "center": [320, 240], "radius": 60,  "fill_rgba": [0.85, 0.1, 0.1, 1.0] },
+    { "type": "circle", "center": [320, 240], "radius": 120, "fill_rgba": [0.95, 0.95, 0.95, 1.0] },
+    { "type": "circle", "center": [320, 240], "radius": 180, "fill_rgba": [0.85, 0.1, 0.1, 1.0] }
+    
+  ]
+}

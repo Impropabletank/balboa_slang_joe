@@ -18,7 +18,7 @@ def make_render_callback(kernel):
     return render
 
 def hw1_1(args):
-    slang_device = spy.create_device()
+    slang_device = spy.create_device(type=spy.DeviceType.cpu)
     compute_shader = device.load_compute_shader(slang_device, 'hw1/hw1_1.slang')
     img = buffer.create_texture_2d(slang_device, args.width, args.height)
 
@@ -37,7 +37,7 @@ def hw1_1(args):
         image.save_png(args.output, img.to_numpy())
 
 def hw1_2(args):
-    slang_device = spy.create_device()
+    slang_device = spy.create_device(type=spy.DeviceType.cpu)
     compute_shader = device.load_compute_shader(slang_device, 'hw1/hw1_2.slang')
     img = buffer.create_texture_2d(slang_device, args.width, args.height)
 
@@ -64,7 +64,7 @@ def hw1_2(args):
         image.save_png(args.output, img.to_numpy())    
 
 def hw1_3(args):
-    slang_device = spy.create_device()
+    slang_device = spy.create_device(type=spy.DeviceType.cpu)
     compute_shader = device.load_compute_shader(slang_device, 'hw1/hw1_3.slang')
     scene = hw1_scene.parse_scene(args.scene)
     img = buffer.create_texture_2d(slang_device, scene.resolution[0], scene.resolution[1])
@@ -80,7 +80,7 @@ def hw1_3(args):
         image.save_png(args.output, img.to_numpy())
 
 def hw1_4(args):
-    slang_device = spy.create_device()
+    slang_device = spy.create_device(type=spy.DeviceType.cpu)
     compute_shader = device.load_compute_shader(slang_device, 'hw1/hw1_4.slang')
     scene = hw1_scene.parse_scene(args.scene)
     img = buffer.create_texture_2d(slang_device, scene.resolution[0], scene.resolution[1])
@@ -96,7 +96,7 @@ def hw1_4(args):
         image.save_png(args.output, img.to_numpy())
 
 def hw1_5(args):
-    slang_device = spy.create_device()
+    slang_device = spy.create_device(type=spy.DeviceType.cpu)
     compute_shader = device.load_compute_shader(slang_device, 'hw1/hw1_4.slang')
     scene = hw1_scene.parse_scene(args.scene)
     img = buffer.create_texture_2d(slang_device, scene.resolution[0], scene.resolution[1])
@@ -123,7 +123,7 @@ def hw1_5(args):
         image.save_png(args.output, img.to_numpy())
 
 def hw1_6(args):
-    slang_device = spy.create_device()
+    slang_device = spy.create_device(type=spy.DeviceType.cpu)
     compute_shader = device.load_compute_shader(slang_device, 'hw1/hw1_6.slang')
     scene = hw1_scene.parse_scene(args.scene)
     img = buffer.create_texture_2d(slang_device, scene.resolution[0], scene.resolution[1])
@@ -150,7 +150,7 @@ def hw1_6(args):
         image.save_png(args.output, img.to_numpy())
 
 def hw1_7(args):
-    slang_device = spy.create_device()
+    slang_device = spy.create_device(type=spy.DeviceType.cpu)
     compute_shader = device.load_compute_shader(slang_device, 'hw1/hw1_7.slang')
     scene = hw1_scene.parse_scene(args.scene)
     img = buffer.create_texture_2d(slang_device, scene.resolution[0], scene.resolution[1])
@@ -177,7 +177,7 @@ def hw1_7(args):
         image.save_png(args.output, img.to_numpy())
 
 def hw1_8(args):
-    slang_device = spy.create_device()
+    slang_device = spy.create_device(type=spy.DeviceType.cpu)
     compute_shader = device.load_compute_shader(slang_device, 'hw1/hw1_8.slang')
     scene = hw1_scene.parse_scene(args.scene)
     img = buffer.create_texture_2d(slang_device, scene.resolution[0], scene.resolution[1])

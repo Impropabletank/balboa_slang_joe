@@ -20,4 +20,67 @@ void compute_main(uint2 tid : SV_DispatchThreadID,
 
     image[tid] = float4(1.0);
     // TODO: your code here
+    
+    float2 p = float2(tid.x + 0.5, tid.y + 0.5);
+    float3 result = background;
+
+    for (int s = 0; s < num_shapes; s++) {
+        Shape shape = shapes[s];
+
+        bool hit_fill = false;
+        bool hit_stroke = false;
+        float3 fill_col = shape.fill_rgba.rgb;
+        float3 stroke_col = shape.stroke_rgba.rgb;
+
+        if (shape.type == ShapeType.Circle) {
+            Circle c = circles[shape.index];
+            float2 d = p - c.center;
+            float dist_sq = dot(d, d);
+            hit_fill = dist_sq <= c.radius * c.radius;
+            hit_stroke = hit_fill; // minus inner radius
+        } else if (shape.type == ShapeType.Polyline) {
+            Polyline pl = polylines[shape.index];
+            int n = pl.pts_end - pl.pts_begin;
+
+            if (shape.use_fill && pl.closed && n >= 3) {
+                int winding = 0;
+                for (int i = 0; i < n; i++) {
+                    int j = (i + 1) % n;
+                    float2 a = points[pl.pts_begin + i];
+                    float2 b = points[pl.pts_begin + j];
+                    if (a.y <= p.y) {
+                        if (b.y > p.y && (b.x - a.x) * (p.y - a.y) - (p.x - a.x) * (b.y - a.y) > 0.0)
+                            winding++;
+                    } else {
+                        if (b.y <= p.y && (b.x - a.x) * (p.y - a.y) - (p.x - a.x) * (b.y - a.y) < 0.0)
+                            winding--;
+                    }
+                }
+                hit_fill = (winding != 0);
+            }
+
+            // stroke
+            if (shape.use_stroke && n >= 2) {
+                float half_w = shape.stroke_width * 0.5;
+                int seg_count = pl.closed ? n : n - 1;
+                for (int i = 0; i < seg_count; i++) {
+                    float2 a = points[pl.pts_begin + i];
+                    float2 b = points[pl.pts_begin + ((i + 1) % n)];
+                    float2 ab = b - a;
+                    float t = clamp(dot(p - a, ab) / dot(ab, ab), 0.0, 1.0);
+                    float2 closest = a + t * ab;
+                    if (dot(p - closest, p - closest) <= half_w * half_w) {
+                        hit_stroke = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // stroke over fill
+        if (hit_fill && shape.use_fill)   result = fill_col;
+        if (hit_stroke && shape.use_stroke) result = stroke_col;
+    }
+
+    image[tid] = float4(result, 1.0);
 }

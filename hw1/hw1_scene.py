@@ -190,13 +190,59 @@ def compose_transformation(transforms):
     F = np.eye(3, dtype=np.float32)
 
     for transform in transforms:
-        pass
+
         # TODO: your code here
+        for op, params in transform.items():
+            T = np.eye(3, dtype=np.float32)
+            if op == "scale":
+                T[0, 0] = params[0]
+                T[1, 1] = params[1]
+            elif op == "rotate":
+                theta = np.radians(params[0])
+                c, s = np.cos(theta), np.sin(theta)
+                T[0, 0] = c
+                T[0, 1] = -s
+                T[1, 0] = s
+                T[1, 1] = c
+            elif op == "translate":
+                T[0, 2] = params[0]
+                T[1, 2] = params[1]
+            elif op == "shear_x":
+                T[0, 1] = params[0]
+            elif op == "shear_y":
+                T[1, 0] = params[0]
+            F = T @ F
 
     return F
 
 def interpolate_transformation(transform_keyframes, t):
     # TODO: your code here
+    kfs = transform_keyframes
+
+    if t <= kfs[0]["time"]:
+        return kfs[0]["transform"]
+    if t >= kfs[-1]["time"]:
+        return kfs[-1]["transform"]
+
+    k0 = kfs[0]; k1 = kfs[-1]
+    for i in range(len(kfs) - 1):
+        if kfs[i]["time"] <= t <= kfs[i + 1]["time"]:
+            k0 = kfs[i]; k1 = kfs[i + 1]
+            break
+
+    t0, t1 = k0["time"], k1["time"]
+    w = (t - t0) / (t1 - t0)
+
+    interp = []
+    for op0, op1 in zip(k0["transform"], k1["transform"]):
+        (name0, p0), = op0.items()
+        (name1, p1), = op1.items()
+        p0 = np.array(p0, dtype=np.float32)
+        p1 = np.array(p1, dtype=np.float32)
+        p = (1.0 - w) * p0 + w * p1
+        interp.append({name0: p.tolist()})  # <-- dict, not matrix
+    return interp
+
 
     # Should never happen?
     assert False
