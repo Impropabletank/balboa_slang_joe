@@ -11,6 +11,11 @@ struct VertexOutput {
 VertexOutput vertex_main(uint vid : SV_VertexID) {
     VertexOutput output;
     // HW 2.6: your code here
+
+    float3 v = vertices[vid];
+    output.position = mul(MVP, float4(v, 1.0));
+    output.color = vertex_colors[vid];
+    
     return output;
 }
 

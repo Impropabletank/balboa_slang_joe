@@ -189,6 +189,47 @@ def compose_transformations(transformations):
     for transform in transformations:
         pass
         # HW 2.3 TODO: your code here
+        for op, params in transform.items():
+            T = np.eye(4, dtype=np.float32)
+            if op == "scale":
+                T[0, 0] = params[0]
+                T[1, 1] = params[1]
+                T[2, 2] = params[2]
+            elif op == "translate":
+                T[0, 3] = params[0]
+                T[1, 3] = params[1]
+                T[2, 3] = params[2]
+            elif op == "rotate_x":
+                th = np.radians(params[0])
+                c, s = np.cos(th), np.sin(th)
+                T[1, 1] = c; T[1, 2] = -s
+                T[2, 1] = s; T[2, 2] = c
+            elif op == "rotate_y":
+                th = np.radians(params[0])
+                c, s = np.cos(th), np.sin(th)
+                T[0, 0] = c; T[0, 2] = s
+                T[2, 0] = -s; T[2, 2] = c
+            elif op == "rotate_z":
+                th = np.radians(params[0])
+                c, s = np.cos(th), np.sin(th)
+                T[0, 0] = c; T[0, 1] = -s
+                T[1, 0] = s; T[1, 1] = c
+            elif op == "lookAt":
+                p = np.array(params[0], dtype=np.float32)
+                tgt = np.array(params[1], dtype=np.float32)
+                u = np.array(params[2], dtype=np.float32)
+                d = tgt - p
+                d = d / np.linalg.norm(d)
+                r = np.cross(d, u)
+                r = r / np.linalg.norm(r)
+                u2 = np.cross(r, d)
+                T = np.array([
+                    [r[0],  u2[0], -d[0], p[0]],
+                    [r[1],  u2[1], -d[1], p[1]],
+                    [r[2],  u2[2], -d[2], p[2]],
+                    [0,     0,     0,     1   ],
+                ], dtype=np.float32)
+            F = T @ F
 
     return F
 
